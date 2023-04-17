@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /////////////////////////////////////////////////////////////////////////////////////
+      // 1) Handling promise from fetch
+      //   fetch("https://restcountries.com/v3.1/all")
+      //     .then((data) => data.json())
+      //     .then((countries) => {
+      //       console.log(countries);
+      //     })
+      //     .catch((err) => {
+      //       console.error(`Api error: ${err}`);
+      //     });
+
+      /////////////////////////////////////////////////////////////////////////////////////
+      // 2. Create our own promise
+      //   const myPromise = new Promise((resolve, reject) => {
+      //     setTimeout(() => {
+      //       //resolve("The job was done");
+      //       reject(Error("The "));
+      //     }, 2000);
+      //   });
+
+      //   myPromise
+      //     .then((data) => {
+      //       console.log(data);
+      //     })
+      //     .catch((err) => {
+      //       console.error(`error: ${err}`);
+      //     });
+
+      /////////////////////////////////////////////////////////////////////////////////////
+      // 3. Create and handle promise
+      //   const cities = [
+      //     { id: 1, country: "Ukraine", name: "Kyiv", population: 2952301 },
+      //     { id: 2, country: "Ukraine", name: "Zaporizhzhia", population: 710052 },
+      //     { id: 3, country: "Ukraine", name: "Odesa", population: 1010537 },
+      //     { id: 4, country: "Ukraine", name: "Lviv", population: 717273 },
+      //   ];
+
+      //   const getCountry = (city) => {
+      //     return fetch(`https://restcountries.com/v3.1/name/${city.country}`)
+      //       .then((data) => data.json())
+      //       .then((list) => {
+      //         return {
+      //           ...city,
+      //           languages: list[0].languages,
+      //         };
+      //       });
+      //   };
+
+      //   // create promise
+      //   const getCityById = (id) => {
+      //     return new Promise((resolve, reject) => {
+      //       setTimeout(() => {
+      //         const city = cities.find((res) => res.id === id);
+      //         if (city) {
+      //           resolve(city);
+      //         } else {
+      //           reject(Error(`City with id ${id} not found`));
+      //         }
+      //       }, 2000);
+      //     });
+      //   };
+      //   // usage of promise
+      //   getCityById(2)
+      //     .then((city) => {
+      //       return getCountry(city);
+      //     })
+      //     .then((updatedCity) => {
+      //       console.log(updatedCity);
+      //     })
+      //     .catch((err) => {
+      //       console.error(err);
+      //     });
+
+      /////////////////////////////////////////////////////////////////////////////////////
+      // 4. Waiting on finish of both promises
+      const makeApiRequest = () => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve("the response received");
+          }, 750);
+        });
+      };
+      const makeDatabaseRequest = () => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve("the data received");
+          }, 3500);
+        });
+      };
+
+      const apiPromise = makeApiRequest();
+      const dbPromise = makeDatabaseRequest();
+
+      Promise.all([apiPromise, dbPromise]).then(([apiPromise, dbPromise]) => {
+        console.log(apiPromise);
+        console.log(dbPromise);
+      });
+
+      /////////////////////////////////////////////////////////////////////////////////////
+      // 5. How to handle two promises
+
+      const usdPromise = fetch("https://restcountries.com/v3.1/currency/USD");
+      const eurPromise = fetch("https://restcountries.com/v3.1/currency/EUR");
+
+      Promise.all([usdPromise, eurPromise])
+        .then((rawData) => Promise.all(rawData.map((res) => res.json())))
+        .then((data) => {
+          console.log(data);
+        });
+    </script>
+  </body>
+</html>
